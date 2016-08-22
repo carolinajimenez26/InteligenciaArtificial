@@ -10,12 +10,13 @@ def main():
     canvas = Canvas(animation, width = WIDTH, height = HEIGHT)
     canvas.pack()
 
-    b1 = BOID([100,100],[5,5],5,canvas)
+    for i in range(0,100):
+        b = BOID([100 + i*i,100 + i*i],[5,5],5,canvas)
 
-    for x in range(0,140):
-		canvas.move(ALL,5,0)
-		animation.update()
-		time.sleep(0.03)
+    for i in range(0,140):
+        canvas.move(ALL,5,0)
+        animation.update()
+        time.sleep(0.03)
 
 
 if __name__ == "__main__":
