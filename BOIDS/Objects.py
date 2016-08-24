@@ -16,20 +16,22 @@ class Circle():
         if (self.i >= 4):
             self.i = 0
 
-    def getPos(self):
-        return [self.x, self.y]
-
 class BOID(Thing):
     def __init__(self, vel, canvas):
         self.vel = vel #x,y
         self.pos = [random.randrange(0,WIDTH),random.randrange(0,HEIGHT)] #x,y
         self.circle = Circle(self.pos[0],self.pos[1],canvas)
 
-    def move(self, pos):
+    def setPos(self, pos):
         self.pos = pos
 
     def getPos(self):
-        return self.circle.getPos()
+        return self.pos
 
     def getVel(self):
         return self.vel
+
+    def updatePosition(self):
+        pos = self.getPos()
+        self.setPos([ pos[0] + 5, pos[0] + 5 ] )
+        #se mueve segun sus reglas
