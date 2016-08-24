@@ -1,3 +1,4 @@
+from agents import *
 
 class Circle():
     colors = ["red","green","blue","yellow"]
@@ -15,7 +16,7 @@ class Circle():
     def getPos(self):
         return [self.x, self.y]
 
-class BOID():
+class BOID(Thing):
     def __init__(self, pos, vel, r, canvas):
         self.vel = vel #x,y
         self.circle = Circle(pos[0],pos[1],r,canvas)
