@@ -1,13 +1,16 @@
 from agents import *
 
+WIDTH = 800
+HEIGHT = 600
+
 class Circle():
     colors = ["red","green","blue","yellow"]
     i = 0
 
-    def __init__(self, x, y, r,canvas):
+    def __init__(self, x, y,canvas):
         self.x = x
         self.y = y
-        self.r = r
+        r = 5
         circle = canvas.create_oval(x,y,x+2*r,y+2*r, fill = "red")
         self.i += 1
         if (self.i >= 4):
@@ -17,9 +20,10 @@ class Circle():
         return [self.x, self.y]
 
 class BOID(Thing):
-    def __init__(self, pos, vel, r, canvas):
+    def __init__(self, vel, canvas):
         self.vel = vel #x,y
-        self.circle = Circle(pos[0],pos[1],r,canvas)
+        self.pos = [random.randrange(0,WIDTH),random.randrange(0,HEIGHT)] #x,y
+        self.circle = Circle(self.pos[0],self.pos[1],canvas)
 
     def move(self, pos):
         self.pos = pos
