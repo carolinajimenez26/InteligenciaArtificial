@@ -3,6 +3,9 @@ from agents import *
 WIDTH = 800
 HEIGHT = 600
 
+def isValid(pos):
+    return (pos[0] >= 0 and pos[0] < WIDTH and pos[1] >= 0 and pos[1] < HEIGHT)
+
 class Circle():
     colors = ["red","green","blue","yellow"]
     i = 0
@@ -23,7 +26,8 @@ class BOID(Thing):
         self.circle = Circle(self.pos[0],self.pos[1],canvas)
 
     def setPos(self, pos):
-        self.pos = pos
+        if (isValid(pos)):
+            self.pos = pos
 
     def getPos(self):
         return self.pos
@@ -31,7 +35,5 @@ class BOID(Thing):
     def getVel(self):
         return self.vel
 
-    def updatePosition(self):
-        pos = self.getPos()
-        self.setPos([ pos[0] + 5, pos[0] + 5 ] )
-        #se mueve segun sus reglas
+    def setVel(self, v):
+        self.vel = v
