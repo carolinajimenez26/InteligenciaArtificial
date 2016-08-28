@@ -19,6 +19,17 @@ void paint(int row, int col) {
   }
 }
 
+void printTable(){
+  for (int i = 0; i < 8; i++) {
+    for (int j = 0; j < 8; j++) {
+      if (table[i][j] != 'q') {
+        cout << '-';
+      } else cout << table[i][j] ;
+    }
+    cout << endl;
+  }
+}
+
 bool bfs(int s) {
   int queens = 0;
   int rows = 0; // inicia en la fila 0
@@ -27,16 +38,27 @@ bool bfs(int s) {
   table[rows][s] = 'q';
   visited[rows][s] = true;
   paint(rows, s); // pinta todos los ataques de la reina en esa posicion
+  cout << "--------" << endl;
+  cout << "row : " << rows << ", col : " << s << endl;
+  printTable();
+  cout << "--------" << endl;
   while (!q.empty()) {
     int n = q.front(); // siguiente elemento de la cola
     q.pop(); // lo saca de la cola
+    paint(rows,n); //pinta el elemento que acaba de sacar
+    queens++;
+    cout << "--------" << endl;
+    cout << "row : " << rows << ", col : " << n << endl;
+    printTable();
+    cout << "--------" << endl;
     if (queens == 8) return true; // caso base, ya posicionó todas las reinas
     for (int j = 0; j < 8; j++) { // busca una columna donde pueda posicionar la siguiente
       if (!visited[rows+1][j]) {
         q.push(j); // lo analiza la siguiente iteración
         visited[rows+1][j] = true; // visitado
-        paint(rows+1,j); // pinta movimientos posibles de esa ficha
-        queens++;
+        //paint(rows+1,j); // pinta movimientos posibles de esa ficha
+        //queens++;
+        table[rows+1][j] = 'q';
       }
     }
     rows++; // pasa de fila
@@ -44,27 +66,12 @@ bool bfs(int s) {
   return false;
 }
 
-void printTable(){
-  for (int i = 0; i < 8; i++) {
-    for (int j = 0; j < 8; j++) {
-      /*if (table[i][j] != 'q') {
-        cout << '-';
-      } else cout << table[i][j] ;*/
-      cout << visited[i][j];
-    }
-    cout << endl;
-  }
-}
-
 int main(void){
   memset(visited, 0, sizeof visited);
   memset(table, '-', sizeof table);
-  /*if (bfs(0)) { // busca una solución
+  if (bfs(0)) { // busca una solución
     printTable();
-  } else cout << "no se encontró solución" << endl;*/
-  printTable();
-  cout << endl ;
-  paint(5,4);
+  } else cout << "no se encontró solución" << endl;
   printTable();
   return 0;
 }
