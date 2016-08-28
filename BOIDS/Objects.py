@@ -8,16 +8,12 @@ def isValid(pos):
 
 class Circle():
     colors = ["red","green","blue","yellow"]
-    i = 0
 
     def __init__(self, x, y,canvas):
         self.x = x
         self.y = y
         r = 5
-        circle = canvas.create_oval(x,y,x+2*r,y+2*r, fill = "red")
-        self.i += 1
-        if (self.i >= 4):
-            self.i = 0
+        circle = canvas.create_oval(x,y,x+3*r,y+3*r, fill = self.colors[random.randrange(0,4)])
 
 class BOID(Thing):
     def __init__(self, vel, canvas):
@@ -27,6 +23,7 @@ class BOID(Thing):
 
     def setPos(self, pos):
         if (isValid(pos)):
+            print "new_pos : " , pos
             self.pos = pos
 
     def getPos(self):

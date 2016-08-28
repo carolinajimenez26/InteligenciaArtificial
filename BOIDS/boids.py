@@ -32,7 +32,7 @@ def rule2(b, all):
     for bi in all:
         if bi != b:
             posi = bi.getPos()
-            if (posi[0] - pos[0] < 100 and posi[1] - pos[1] < 100):
+            if (abs(posi[0] - pos[0]) < 100 and abs(posi[1] - pos[1]) < 100):
                 cx -= posi[0] - pos[0]
                 cy -= posi[1] - pos[1]
 
@@ -59,7 +59,7 @@ def draw_boids(canvas, animation, all_boids):
         pos = all_boids[i].getPos()
         canvas.move(i,pos[0],pos[1])
         animation.update()
-        time.sleep(0.05)
+        time.sleep(0.01)
 
 def move_all_boids_to_new_positions(all_boids):
     for b in all_boids:
@@ -82,7 +82,7 @@ def main():
     canvas.pack()
     all_boids = []
 
-    for i in range(0,100):
+    for i in range(0,500):
         b = BOID([1,1],canvas)
         all_boids.insert(i,b)
 
