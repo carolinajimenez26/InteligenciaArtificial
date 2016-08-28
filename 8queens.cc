@@ -4,19 +4,18 @@ char table[8][8];
 bool visited[8][8];
 
 void paint(int row, int col) {
-  for (int i = 0; i < 8; i++) {
+  int i, j;
+  for (i = 0; i < 8; i++) {
     visited[row][i] = true;
     visited[i][col] = true;
   }
-  for (int i = row; i < 8; i++) {
-    for (int j = col; j < 8; j++) {
-      visited[i][j] = true;
-    }
+  j = col;
+  for (i = row; i >= 0 && j >= 0; i--, j--) {
+    visited[i][j] = true;
   }
-  for (int i = row; i >= 0; i--) {
-    for (int j = col; j >= 0; j--) {
-      visited[i][j] = true;
-    }
+  j = col;
+  for (i = row; i < 8 && j < 8; i++, j++) {
+    visited[i][j] = true;
   }
 }
 
@@ -48,9 +47,10 @@ bool bfs(int s) {
 void printTable(){
   for (int i = 0; i < 8; i++) {
     for (int j = 0; j < 8; j++) {
-      if (table[i][j] != 'q') {
+      /*if (table[i][j] != 'q') {
         cout << '-';
-      } else cout << table[i][j] ;
+      } else cout << table[i][j] ;*/
+      cout << visited[i][j];
     }
     cout << endl;
   }
@@ -59,8 +59,12 @@ void printTable(){
 int main(void){
   memset(visited, 0, sizeof visited);
   memset(table, '-', sizeof table);
-  if (bfs(0)) { // busca una solución
+  /*if (bfs(0)) { // busca una solución
     printTable();
-  } else cout << "no se encontró solución" << endl;
+  } else cout << "no se encontró solución" << endl;*/
+  printTable();
+  cout << endl ;
+  paint(5,4);
+  printTable();
   return 0;
 }
