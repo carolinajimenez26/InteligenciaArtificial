@@ -23,7 +23,7 @@ class BOID(Thing):
 
     def setPos(self, pos):
         if (isValid(pos)):
-            print "new_pos : " , pos
+            #print "new_pos : " , pos
             self.pos = pos
 
     def getPos(self):
