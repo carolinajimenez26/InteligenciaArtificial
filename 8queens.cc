@@ -17,14 +17,23 @@ void paint(int row, int col) {
   for (i = row; i < 8 && j < 8; i++, j++) {
     visited[i][j] = true;
   }
+  j = col;
+  for (i = row; i >= 0 && j < 8; i--, j++) {
+    visited[i][j] = true;
+  }
+  j = col;
+  for (i = row; i < 8 && j >= 0; i++, j--) {
+    visited[i][j] = true;
+  }
 }
 
 void printTable(){
   for (int i = 0; i < 8; i++) {
     for (int j = 0; j < 8; j++) {
-      if (table[i][j] != 'q') {
+      /*if (table[i][j] != 'q') {
         cout << '-';
       } else cout << table[i][j] ;
+      */ cout << visited[i][j] ;
     }
     cout << endl;
   }
@@ -69,9 +78,10 @@ bool bfs(int s) {
 int main(void){
   memset(visited, 0, sizeof visited);
   memset(table, '-', sizeof table);
-  if (bfs(0)) { // busca una solución
+  /*if (bfs(0)) { // busca una solución
     printTable();
-  } else cout << "no se encontró solución" << endl;
+  } else cout << "no se encontró solución" << endl;*/
+  paint(5,4);
   printTable();
   return 0;
 }
