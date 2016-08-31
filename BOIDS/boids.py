@@ -55,11 +55,10 @@ def rule3(b, all):
 
     return [float((vx - vel[0])/8),float((vy - vel[1])/8)]
 
-def isValid(pos):
-    return (pos[0] >= 0 and pos[0] < WIDTH and pos[1] >= 0 and pos[1] < HEIGHT)
-
 def Bresenham(x0,y0,x1,y1, b, canvas, animation):
-
+    moves = []
+    cont = 0
+    print ("b : " , b)
     dx = (x1 - x0)
     print ("dx : ", dx)
     dy = (y1 - y0)
@@ -77,14 +76,15 @@ def Bresenham(x0,y0,x1,y1, b, canvas, animation):
         stepx = 1
     x = x0
     y = y0
+    moves.insert(cont,[x,y])
 
     print ("x : ", x)
     print ("y : ", y)
-    canvas.move(b,x,y)
+    print ("gonna move!!")
+    """canvas.move(b,x,y)
     animation.update()
-    time.sleep(0.0001)
+    time.sleep(0.1)"""
 
-    #se cicla hasta llegar al extremo de la linea
     if(dx > dy) :
         print ("if")
         p = 2*dy - dx
@@ -97,10 +97,13 @@ def Bresenham(x0,y0,x1,y1, b, canvas, animation):
             else :
                 y = y + stepy
                 p = p + incNE
-
-            canvas.move(b,x,y)
+            print ("new_x : ", x)
+            print ("new_y : ", y)
+            print ("gonna move!!")
+            moves.insert(cont,[x,y])
+            """canvas.move(b,x,y)
             animation.update()
-            time.sleep(0.0001)
+            time.sleep(0.1)"""
 
     else :
         print ("else")
@@ -116,10 +119,14 @@ def Bresenham(x0,y0,x1,y1, b, canvas, animation):
             else :
                 x = x + stepx
                 p = p + incNE
-
-            canvas.move(b,x,y)
+            moves.insert(cont,[x,y])
+            print ("new_x : ", x)
+            print ("new_y : ", y)
+            print ("gonna move!!")
+            """canvas.move(b,x,y)
             animation.update()
-            time.sleep(0.0001)
+            time.sleep(0.1)"""
+    return moves
 
 def draw_boids(canvas, animation, all_boids, prev_pos):
     for i in range(0, len(all_boids)): # movemos todos los Boids
@@ -167,15 +174,40 @@ def main():
     canvas = Canvas(animation, width = WIDTH, height = HEIGHT)
     canvas.pack()
     all_boids = []
-
-    for i in range(0,150):
+    b = BOID([5,5],canvas)
+    b2 = BOID([5,5],canvas)
+    """for i in range(0,150):
         b = BOID([1,1],canvas)
         all_boids.insert(i,b)
 
     while True:
         prev_pos = move_all_boids_to_new_positions(all_boids)
         #print ("prev_pos in while " , prev_pos)
-        draw_boids(canvas, animation, all_boids, prev_pos)
+        draw_boids(canvas, animation, all_boids, prev_pos)"""
+
+    """for x in range(0,140):
+        print("Hola Caro :) ")
+        canvas.move(1,5,5)
+        canvas.move(2,5,5)
+        animation.update()
+        time.sleep(0.5)
+"""
+    moves1 = Bresenham(b.getPos()[0],b.getPos()[1],500,500,1,canvas, animation)
+    moves2 = Bresenham(b2.getPos()[0],b2.getPos()[1],500,500,2,canvas, animation)
+
+    for i in range(1,len(moves1)):
+        inc_x = moves1[i][0] - moves1[i-1][0]
+        inc_y = moves1[i][1] - moves1[i-1][1]
+        canvas.move(1,inc_x,inc_y)
+        animation.update()
+        time.sleep(0.1)
+
+    for i in range(1,len(moves1)):
+        inc_x = moves2[i][0] - moves2[i-1][0]
+        inc_y = moves2[i][1] - moves2[i-1][1]
+        canvas.move(2,inc_x,inc_y)
+        animation.update()
+        time.sleep(0.1)
 
 if __name__ == "__main__":
     main()
