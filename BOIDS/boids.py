@@ -48,15 +48,13 @@ def rule3(b, all):
     vx = float(vx) / (len(all) - 1)
     vy = float(vy) / (len(all) - 1)
 
-    return [float(vx - vel[0])/len(all),float(vy - vel[1])/len(all)]
+    return [float(vx - vel[0])/8,float(vy - vel[1])/8]
 
 def Bresenham(x0, y0, x1, y1):
     moves = []
     cont = 0
     dx = (x1 - x0)
     dy = (y1 - y0)
-    #print ("dx : " , dx)
-    #print ("dy : " , dy)
     #determinar que punto usar para empezar, cual para terminar
     if (dy < 0.0) :
         dy = -1*dy
@@ -74,7 +72,6 @@ def Bresenham(x0, y0, x1, y1):
     cont += 1
 
     if(dx > dy) :
-        #print ("dx > dy")
         p = 2*dy - dx
         incE = 2*dy
         incNE = 2*(dy-dx)
@@ -85,13 +82,10 @@ def Bresenham(x0, y0, x1, y1):
             else :
                 y = y + stepy
                 p = p + incNE
-            #print ("x : ", x)
-            #print ("x1 : ", x1)
             moves.insert(cont,[x,y])
             cont += 1
 
     else :
-        #print ("dx < dy")
         p = 2*dx - dy
         incE = 2*dx
         incNE = 2*(dx-dy)
@@ -102,8 +96,6 @@ def Bresenham(x0, y0, x1, y1):
             else :
                 x = x + stepx
                 p = p + incNE
-            #print ("y : ", y)
-            #print ("y1 : ", y1)
             moves.insert(cont,[x,y])
             cont += 1
 
@@ -123,7 +115,7 @@ def draw_boids(canvas, animation, all_boids, prev_pos):
             inc_y = moves[j][1] - moves[j-1][1]
             canvas.move(i+1,inc_x,inc_y)
             animation.update()
-            time.sleep(0.002)
+            time.sleep(0.00002)
     del prev_pos
 
 def move_all_boids_to_new_positions(all_boids):
@@ -153,7 +145,7 @@ def main():
     canvas.pack()
     all_boids = []
 
-    for i in range(0,10):
+    for i in range(0,100):
         b = BOID([0,0],canvas)
         all_boids.insert(i,b)
 

@@ -21,7 +21,7 @@ class Circle():
 class BOID(Agent):
     def __init__(self, vel, canvas):
         self.vel = vel #x,y
-        self.pos = [random.randrange(0,WIDTH),random.randrange(0,HEIGHT)] #x,y
+        self.pos = [random.randrange(WIDTH/4,WIDTH - WIDTH/4),random.randrange(HEIGHT/4,HEIGHT - HEIGHT/4)] #x,y
         self.circle = Circle(self.pos[0],self.pos[1],canvas)
 
     def setPos(self, pos):
