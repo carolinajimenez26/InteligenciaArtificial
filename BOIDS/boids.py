@@ -9,33 +9,29 @@ HEIGHT = 600
 def rule1(b, all):
     cx = 0
     cy = 0
-    for bi in all:
-        posi = bi.getPos()
-        cx += posi[0]
-        cy += posi[1]
-
-    # No se incluye a si mismo
     pos = b.getPos()
-    cx -= pos[0]
-    cy -= pos[1]
+    for bi in all:
+        if bi != b: # No se incluye a si mismo
+            posi = bi.getPos()
+            cx += posi[0]
+            cy += posi[1]
 
-    ans = [float(cx/(len(all)-1)),float(cy/(len(all)-1))]
+    ans = [float(cx)/(len(all)-1),float(cy)/(len(all)-1)]
 
     # Se mueve un 1%
-    return [float((ans[0] - pos[0])/100),float((ans[1] - pos[1])/100)]
+    return [float(ans[0] - pos[0])/100,float(ans[1] - pos[1])/100]
 
 # Boids tratan de tener una distancia con los demas
-def rule2(b, all):
+def rule2(b, all, d):
     pos = b.getPos()
     cx = 0
     cy = 0
     for bi in all:
         if bi != b:
             posi = bi.getPos()
-            if (abs(posi[0] - pos[0]) < 100 and abs(posi[1] - pos[1]) < 100):
+            if (abs(posi[0] - pos[0]) < d and abs(posi[1] - pos[1]) < d):
                 cx -= posi[0] - pos[0]
                 cy -= posi[1] - pos[1]
-
     return [cx,cy]
 
 # Boids tratan de ir a una velocidad similar a los otros
@@ -49,22 +45,25 @@ def rule3(b, all):
             vx += veli[0]
             vy += veli[1]
 
-    vx = float(vx / (len(all) - 1))
-    vy = float(vy / (len(all) - 1))
+    vx = float(vx) / (len(all) - 1)
+    vy = float(vy) / (len(all) - 1)
 
-    return [float((vx - vel[0])/8),float((vy - vel[1])/8)]
+    return [float(vx - vel[0])/len(all),float(vy - vel[1])/len(all)]
 
-def Bresenham(x0, y0, x1, y1, b, canvas, animation):
+def Bresenham(x0, y0, x1, y1):
     moves = []
+    cont = 0
     dx = (x1 - x0)
     dy = (y1 - y0)
+    #print ("dx : " , dx)
+    #print ("dy : " , dy)
     #determinar que punto usar para empezar, cual para terminar
-    if (dy < 0) :
+    if (dy < 0.0) :
         dy = -1*dy
         stepy = -1
     else :
         stepy = 1
-    if (dx < 0) :
+    if (dx < 0.0) :
         dx = -1*dx
         stepx = -1
     else :
@@ -72,8 +71,10 @@ def Bresenham(x0, y0, x1, y1, b, canvas, animation):
     x = x0
     y = y0
     moves.insert(cont,[x,y])
+    cont += 1
 
     if(dx > dy) :
+        #print ("dx > dy")
         p = 2*dy - dx
         incE = 2*dy
         incNE = 2*(dy-dx)
@@ -84,9 +85,13 @@ def Bresenham(x0, y0, x1, y1, b, canvas, animation):
             else :
                 y = y + stepy
                 p = p + incNE
+            #print ("x : ", x)
+            #print ("x1 : ", x1)
             moves.insert(cont,[x,y])
+            cont += 1
 
     else :
+        #print ("dx < dy")
         p = 2*dx - dy
         incE = 2*dx
         incNE = 2*(dx-dy)
@@ -97,30 +102,37 @@ def Bresenham(x0, y0, x1, y1, b, canvas, animation):
             else :
                 x = x + stepx
                 p = p + incNE
+            #print ("y : ", y)
+            #print ("y1 : ", y1)
             moves.insert(cont,[x,y])
+            cont += 1
 
     return moves
 
 def draw_boids(canvas, animation, all_boids, prev_pos):
     for i in range(0, len(all_boids)): # movemos todos los Boids
+        print ("boid#" , i)
         b = all_boids[i]
         prev = prev_pos[i] # desde donde
+        print ("from : ", prev)
         pos = b.getPos() # hasta donde
-        moves = Bresenham(int(prev[0]), int(prev[1]), int(pos[0]), int(pos[1]), i, canvas, animation)
+        print ("to : ", pos)
+        moves = Bresenham(int(prev[0]), int(prev[1]), int(pos[0]), int(pos[1]))
         for j in range(1,len(moves)):
             inc_x = moves[j][0] - moves[j-1][0]
             inc_y = moves[j][1] - moves[j-1][1]
-            canvas.move(i,inc_x,inc_y)
+            canvas.move(i+1,inc_x,inc_y)
             animation.update()
-            time.sleep(0.0001)
+            time.sleep(0.002)
     del prev_pos
 
 def move_all_boids_to_new_positions(all_boids):
     prev_pos = []
     for i in range(0,len(all_boids)) :
         b = all_boids[i]
+        d = b.getRadius() # distancia de separacion entre BOIDS
         v1 = rule1(b,all_boids)
-        v2 = rule2(b,all_boids)
+        v2 = rule2(b,all_boids,d)
         v3 = rule3(b,all_boids)
 
         vx = b.getVel()[0] + v1[0] + v2[0] + v3[0]
@@ -141,8 +153,8 @@ def main():
     canvas.pack()
     all_boids = []
 
-    for i in range(0,150):
-        b = BOID([1,1],canvas)
+    for i in range(0,10):
+        b = BOID([0,0],canvas)
         all_boids.insert(i,b)
 
     while True:

@@ -12,10 +12,13 @@ class Circle():
     def __init__(self, x, y,canvas):
         self.x = x
         self.y = y
-        r = 5
-        circle = canvas.create_oval(x,y,x+3*r,y+3*r, fill = self.colors[random.randrange(0,4)])
+        self.r = 3
+        circle = canvas.create_oval(x,y,x+2*self.r,y+2*self.r, fill = self.colors[random.randrange(0,4)])
 
-class BOID(Thing):
+    def getRadius(self):
+        return self.r
+
+class BOID(Agent):
     def __init__(self, vel, canvas):
         self.vel = vel #x,y
         self.pos = [random.randrange(0,WIDTH),random.randrange(0,HEIGHT)] #x,y
@@ -23,7 +26,6 @@ class BOID(Thing):
 
     def setPos(self, pos):
         if (isValid(pos)):
-            #print "new_pos : " , pos
             self.pos = pos
 
     def getPos(self):
@@ -34,3 +36,6 @@ class BOID(Thing):
 
     def setVel(self, v):
         self.vel = v
+
+    def getRadius(self):
+        return self.circle.getRadius()
