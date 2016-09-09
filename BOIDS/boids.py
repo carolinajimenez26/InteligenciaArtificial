@@ -4,6 +4,9 @@ from Objects import *
 
 WIDTH = 800
 HEIGHT = 600
+v = 0.002 #0.0000000002 # velocidad de pintado de pantalla
+nboids = 10 # cantidad total de boids creados
+
 
 # Boids se mueven segun el centro de masa de los demas
 def rule1(b, all):
@@ -115,7 +118,7 @@ def draw_boids(canvas, animation, all_boids, prev_pos):
             inc_y = moves[j][1] - moves[j-1][1]
             canvas.move(i+1,inc_x,inc_y)
             animation.update()
-            time.sleep(0.00002)
+            time.sleep(v)
     del prev_pos
 
 def move_all_boids_to_new_positions(all_boids):
@@ -145,7 +148,7 @@ def main():
     canvas.pack()
     all_boids = []
 
-    for i in range(0,100):
+    for i in range(0,nboids):
         b = BOID([0,0],canvas)
         all_boids.insert(i,b)
 

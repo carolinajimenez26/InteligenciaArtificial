@@ -6,6 +6,9 @@ HEIGHT = 600
 def isValid(pos):
     return (pos[0] >= 0 and pos[0] < WIDTH and pos[1] >= 0 and pos[1] < HEIGHT)
 
+def isLimit(pos, error):
+    return (pos[0] - error <= 0) or (pos[0] + error >= WIDTH) or (pos[1] - error <= 0) or (pos[1] + error >= HEIGHT)
+
 class Circle():
     colors = ["red","green","blue","yellow"]
 
@@ -26,7 +29,10 @@ class BOID(Agent):
 
     def setPos(self, pos):
         if (isValid(pos)):
-            self.pos = pos
+            if (isLimit(pos, self.getRadius()*2)):
+                self.changeDir()
+            else:
+                self.pos = pos
 
     def getPos(self):
         return self.pos
@@ -39,3 +45,22 @@ class BOID(Agent):
 
     def getRadius(self):
         return self.circle.getRadius()
+
+    def changeDir(self):
+        print ("change dir")
+        pos = self.getPos()
+        print ("pos : ", pos)
+        r = self.getRadius()
+        error = r*r*r
+        if (pos[0] - error <= 0): # se acerca al limite izquierdo
+            print ("limite izq")
+            self.setPos([pos[0]+r*r*r,pos[1]])
+        if (pos[0] + error >= WIDTH): # se acerca al limite derecho
+            print ("limite der")
+            self.setPos([pos[0]-r*r*r,pos[1]])
+        if (pos[1] - error <= 0): # se acerca al limite superior
+            print ("limite sup")
+            self.setPos([pos[0],pos[1]+r*r*r])
+        if (pos[1] + error >= HEIGHT): # se acerca al limite inferior
+            print ("limite inf")
+            self.setPos([pos[0],pos[1]-r*r*r])
