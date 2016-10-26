@@ -29,15 +29,17 @@ class Ajedrez():
 
     def agregaFicha(self,ficha):
         print (ficha.s)
-        print ()
+        print (self.tablero[ficha.pos.x][ficha.pos.y].__repr__())
         self.tablero[ficha.pos.x][ficha.pos.y] = ficha
         print ("wi")
 
     def muestra(self):
+        print (self.tablero)
         for i in range (0, len(self.tablero)):
             for j in range (0, len(self.tablero)):
-                print (self.tablero[i][j])
-                print (self.tablero[i][j].muestra()),
+                pass
+                #print (self.tablero[i][j].__repr__())
+                #print (self.tablero[i][j].muestra()),
             print
 
 class Ficha():
@@ -158,5 +160,5 @@ if __name__ == "__main__":
         ["tb","cb","ab","rnb","rb","ab","cb","tb"]
     ]
 
-    #init(tablero_tmp,tablero)
+    init(tablero_tmp,tablero)
     #tablero.muestra()
