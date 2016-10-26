@@ -16,104 +16,116 @@ profundidad_maxima = 10
 def movimientoValido(posf):
     return posf[0] >= 0 and posf[0] < 8 and posf[1] >= 0 and posf[1] < 8
 
-def moverFicha(posi,posf,tablero_aux):
+def moverFicha(posi,posf,tablero):
+    print ("moverFicha")
     print (posi,posf)
     ficha = tablero_aux[posi[0]][posi[1]]
-    tablero_aux[posi[0]][posi[1]] = "v"
-    tablero_aux[posf[0]][posf[1]] = ficha
+    tablero[posi[0]][posi[1]] = "v"
+    tablero[posf[0]][posf[1]] = ficha
 
-def movTorre(pos):
-    print ("movTorre")
-    tmp = pos
+def movTorre(pos,tablero):
+    tmp = pos[:]
     tmp[1] -= 1
+    print (tmp)
     movimientos = [] #posiciones a las que se puede mover
-    # arriba
-    while (True):
-        if (movimientoValido(tmp)):
-            if (tablero[pos[0]][tmp[1]] == "v"):
-                movimientos.append(tmp)
-            if (tablero[pos[0]][tmp[1]][-1] != tablero[pos[0]][pos[1]][-1] ): # si son del mismo color
-                movimientos.append(tmp)
-                break
-            tmp[1] -= 1
-        else :
-            break
 
-    tmp = pos
-    tmp[1] += 1
-
-    # abajo
-    while (True):
-        if (movimientoValido(tmp)):
-            if (tablero[tmp[0]][tmp[1]] == "v"):
-                movimientos.append(tmp)
-            if (tablero[tmp[0]][tmp[1]][-1] != tablero[pos[0]][pos[1]][-1] ): # si son del mismo color
-                movimientos.append(tmp)
-                break
-            tmp[1] += 1
-        else :
-            break
-
-    tmp = pos
-    tmp[0] -= 1
-
-    # izquierda
-    while (True):
-        if (movimientoValido(tmp)):
-            if (tablero[tmp[0]][tmp[1]] == "v"):
-                movimientos.append(tmp)
-            if (tablero[tmp[0]][tmp[1]][-1] != tablero[pos[0]][pos[1]][-1] ): # si son del mismo color
-                movimientos.append(tmp)
-                break
-            tmp[0] -= 1
-        else :
-            break
-
-    tmp = pos
-    tmp[0] += 1
+    tmp = pos[:]
+    tmp[1] += 1 # x
 
     # derecha
     while (True):
         if (movimientoValido(tmp)):
             if (tablero[tmp[0]][tmp[1]] == "v"):
-                movimientos.append(tmp)
-            if (tablero[tmp[0]][tmp[1]][-1] != tablero[pos[0]][pos[1]][-1] ): # si son del mismo color
-                movimientos.append(tmp)
+                movimientos.append(tmp[:])
+            if (tablero[tmp[0]][tmp[1]][-1] != tablero[pos[0]][pos[1]][-1]  and tablero[tmp[0]][tmp[1]] != "v" ): # si son del mismo color
+                movimientos.append(tmp[:])
+                break #Si hay dos o mas de otro color seguidos, se come solo al primero
+            if (tablero[tmp[0]][tmp[1]][-1] == tablero[pos[0]][pos[1]][-1] and tablero[tmp[0]][tmp[1]] != "v"): # si se encuentra a alguien del mismo color no puede seguir avanzando
+                break
+            tmp[1] += 1
+        else :
+            break
+
+    tmp = pos[:]
+    tmp[0] += 1
+    print (tmp)
+    # abajo
+    while (True):
+        if (movimientoValido(tmp)):
+            if (tablero[tmp[0]][tmp[1]] == "v"):
+                movimientos.append(tmp[:])
+            if (tablero[tmp[0]][tmp[1]][-1] != tablero[pos[0]][pos[1]][-1] and tablero[tmp[0]][tmp[1]] != "v"): # si son de diferente color
+                movimientos.append(tmp[:])
+                break #Si hay dos o mas de otro color seguidos, se come solo al primero
+            if (tablero[tmp[0]][tmp[1]][-1] == tablero[pos[0]][pos[1]][-1] and tablero[tmp[0]][tmp[1]] != "v"): # si se encuentra a alguien del mismo color no puede seguir avanzando
                 break
             tmp[0] += 1
         else :
             break
 
+    tmp = pos[:]
+    tmp[0] -= 1
+    print (tmp)
+    # arriba
+    while (True):
+        if (movimientoValido(tmp)):
+            if (tablero[tmp[0]][tmp[1]] == "v"):
+                movimientos.append(tmp[:])
+            if (tablero[tmp[0]][tmp[1]][-1] != tablero[pos[0]][pos[1]][-1] and tablero[tmp[0]][tmp[1]] != "v"): # si son del mismo color
+                movimientos.append(tmp[:])
+                break
+            if (tablero[tmp[0]][tmp[1]][-1] == tablero[pos[0]][pos[1]][-1] and tablero[tmp[0]][tmp[1]] != "v"): # si se encuentra a alguien del mismo color no puede seguir avanzando
+                break
+            tmp[0]-= 1
+        else :
+            break
+
+    tmp = pos[:]
+    tmp[1] -= 1
+    print (tmp)
+
+    # izquierda
+    while (True):
+        if (movimientoValido(tmp)):
+            if (tablero[tmp[0]][tmp[1]] == "v"):
+                movimientos.append(tmp[:])
+            if (tablero[tmp[0]][tmp[1]][-1] != tablero[pos[0]][pos[1]][-1] ): # si son del mismo color
+                movimientos.append(tmp[:])
+                break
+            if (tablero[tmp[0]][tmp[1]][-1] == tablero[pos[0]][pos[1]][-1] and tablero[tmp[0]][tmp[1]] != "v"): # si se encuentra a alguien del mismo color no puede seguir avanzando
+                break
+            tmp[0] -= 1
+        else :
+            break
+
     return movimientos
 
-
-def movCaballo(pos):
-    print ("movCaballo")
+def movCaballo(pos,tablero):
     movimientos = []
-    uno = pos
-    uno[0] = pos[0]+1
-    uno[1] = pos[1]-2
-    dos = pos
-    dos[0] = pos[0]-1
-    dos[1] = pos[1]-2
-    tres = pos
-    tres[0] = pos[0]+2
-    tres[1] = pos[1]-1
-    cuatro = pos
-    cuatro[0] = pos[0]+2
-    cuatro[1] = pos[1]+1
-    cinco = pos
-    cinco[0] = pos[0]+1
-    cinco[1] = pos[1]+2
-    seis = pos
-    seis[0] = pos[0]-1
-    seis[1] = pos[1]+2
-    siete = pos
-    siete[0] = pos[0]-2
-    siete[1] = pos[1]+1
-    ocho = pos
-    ocho[0] = pos[0]-2
-    ocho[1] = pos[1]-1
+    uno = pos[:]
+    uno[1] = pos[1]+1
+    uno[0] = pos[0]-2
+    dos = pos[:]
+    dos[1] = pos[1]-1
+    dos[0] = pos[0]-2
+    tres = pos[:]
+    tres[1] = pos[1]+2
+    tres[0] = pos[0]-1
+    cuatro = pos[:]
+    cuatro[1] = pos[1]+2
+    cuatro[0] = pos[0]+1
+    cinco = pos[:]
+    cinco[1] = pos[1]+1
+    cinco[0] = pos[0]+2
+    seis = pos[:]
+    seis[1] = pos[1]-1
+    seis[0] = pos[0]+2
+    siete = pos[:]
+    siete[1] = pos[1]-2
+    siete[0] = pos[0]+1
+    ocho = pos[:]
+    ocho[1] = pos[1]-2
+    ocho[0] = pos[0]-1
 
     posibilidades = [uno,dos,tres,cuatro,cinco,seis,siete,ocho]
 
@@ -121,77 +133,88 @@ def movCaballo(pos):
         if (movimientoValido(p)):
             if (tablero[p[0]][p[1]] == "v"):
                 movimientos.append(p)
-            if (tablero[p[0]][p[1]][-1] != tablero[pos[0]][pos[1]][-1]):
+            if (tablero[p[0]][p[1]][-1] != tablero[pos[0]][pos[1]][-1] and tablero[p[0]][p[1]] != "v"):
                 movimientos.append(p)
 
     return movimientos
 
-def movAlfil(pos):
-    print ("movAlfil")
+def movAlfil(pos,tablero):
     movimientos = []
 
-    tmp = pos
-    tmp[0] = pos[0]-1
+    tmp = pos[:]
     tmp[1] = pos[1]-1
+    tmp[0] = pos[0]-1
 
     # arriba izquierda
     while (True):
         if (movimientoValido(tmp)):
             if (tablero[tmp[0]][tmp[1]] == "v"):
-                movimientos.append(tmp)
-            if (tablero[tmp[0]][tmp[1]][-1] != tablero[pos[0]][pos[1]][-1] ): # si son del mismo color
-                movimientos.append(tmp)
+                movimientos.append(tmp[:])
+            if (tablero[tmp[0]][tmp[1]][-1] != tablero[pos[0]][pos[1]][-1] and tablero[tmp[0]][tmp[1]] != "v"): # si son del mismo color
+                movimientos.append(tmp[:])
                 break
-            tmp[0] -= 1
+            if (tablero[tmp[0]][tmp[1]][-1] == tablero[pos[0]][pos[1]][-1] and tablero[tmp[0]][tmp[1]] != "v"): # si se encuentra a alguien del mismo color no puede seguir avanzando
+                break
             tmp[1] -= 1
+            tmp[0] -= 1
         else :
             break
 
-    tmp[0] = pos[0]+1
-    tmp[1] = pos[1]-1
+    tmp = pos[:]
+    tmp[1] = pos[1]+1
+    tmp[0] = pos[0]-1
+    print ("tmp : ", tmp)
 
     # arriba derecha
     while (True):
         if (movimientoValido(tmp)):
             if (tablero[tmp[0]][tmp[1]] == "v"):
-                movimientos.append(tmp)
-            if (tablero[tmp[0]][tmp[1]][-1] != tablero[pos[0]][pos[1]][-1] ): # si son del mismo color
-                movimientos.append(tmp)
+                movimientos.append(tmp[:])
+            if (tablero[tmp[0]][tmp[1]][-1] != tablero[pos[0]][pos[1]][-1] and tablero[tmp[0]][tmp[1]] != "v"): # si son del mismo color
+                movimientos.append(tmp[:])
                 break
-            tmp[0] += 1
-            tmp[1] -= 1
+            if (tablero[tmp[0]][tmp[1]][-1] == tablero[pos[0]][pos[1]][-1] and tablero[tmp[0]][tmp[1]] != "v"): # si se encuentra a alguien del mismo color no puede seguir avanzando
+                break
+            tmp[1] += 1
+            tmp[0] -= 1
         else :
             break
 
-    tmp[0] = pos[0]-1
-    tmp[1] = pos[1]+1
+    tmp = pos[:]
+    tmp[1] = pos[1]-1
+    tmp[0] = pos[0]+1
 
     # abajo izquierda
     while (True):
         if (movimientoValido(tmp)):
             if (tablero[tmp[0]][tmp[1]] == "v"):
-                movimientos.append(tmp)
-            if (tablero[tmp[0]][tmp[1]][-1] != tablero[pos[0]][pos[1]][-1] ): # si son del mismo color
-                movimientos.append(tmp)
+                movimientos.append(tmp[:])
+            if (tablero[tmp[0]][tmp[1]][-1] != tablero[pos[0]][pos[1]][-1] and tablero[tmp[0]][tmp[1]] != "v" ): # si son del mismo color
+                movimientos.append(tmp[:])
                 break
-            tmp[0] -= 1
-            tmp[1] += 1
+            if (tablero[tmp[0]][tmp[1]][-1] == tablero[pos[0]][pos[1]][-1] and tablero[tmp[0]][tmp[1]] != "v"): # si se encuentra a alguien del mismo color no puede seguir avanzando
+                break
+            tmp[1] -= 1
+            tmp[0] += 1
         else :
             break
 
-    tmp[0] = pos[0]+1
+    tmp = pos[:]
     tmp[1] = pos[1]+1
+    tmp[0] = pos[0]+1
 
     # abajo derecha
     while (True):
         if (movimientoValido(tmp)):
             if (tablero[tmp[0]][tmp[1]] == "v"):
-                movimientos.append(tmp)
-            if (tablero[tmp[0]][tmp[1]][-1] != tablero[pos[0]][pos[1]][-1] ): # si son del mismo color
-                movimientos.append(tmp)
+                movimientos.append(tmp[:])
+            if (tablero[tmp[0]][tmp[1]][-1] != tablero[pos[0]][pos[1]][-1] and tablero[tmp[0]][tmp[1]] != "v"): # si son del mismo color
+                movimientos.append(tmp[:])
                 break
-            tmp[0] += 1
+            if (tablero[tmp[0]][tmp[1]][-1] == tablero[pos[0]][pos[1]][-1] and tablero[tmp[0]][tmp[1]] != "v"): # si se encuentra a alguien del mismo color no puede seguir avanzando
+                break
             tmp[1] += 1
+            tmp[0] += 1
         else :
             break
 
@@ -207,32 +230,32 @@ def movRey(pos):
     print ("movRey")
     movimientos = []
     # arriba
-    uno = pos
-    uno[0] = pos[0]
-    uno[1] = pos[1]-1
+    uno = pos[:]
+    uno[1] = pos[1]
+    uno[0] = pos[0]-1
     if (movimientoValido(uno)):
         if (tablero[uno[0]][uno[1]] == "v"):
             movimientos.append(uno)
         if (tablero[uno[0]][uno[1]][-1] != tablero[pos[0]][pos[1]][-1]):
             movimientos.append(uno)
     # abajo
-    uno[1] = pos[1]+1
+    uno[0] = pos[0]+1
     if (movimientoValido(uno)):
         if (tablero[uno[0]][uno[1]] == "v"):
             movimientos.append(uno)
         if (tablero[uno[0]][uno[1]][-1] != tablero[pos[0]][pos[1]][-1]):
             movimientos.append(uno)
     # izquierda
-    uno[0] = pos[0]-1
-    uno[1] = pos[1]
+    uno[1] = pos[1]-1
+    uno[0] = pos[0]
     if (movimientoValido(uno)):
         if (tablero[uno[0]][uno[1]] == "v"):
             movimientos.append(uno)
         if (tablero[uno[0]][uno[1]][-1] != tablero[pos[0]][pos[1]][-1]):
             movimientos.append(uno)
     # derecha
-    uno[0] = pos[0]+1
-    uno[1] = pos[1]
+    uno[1] = pos[1]+1
+    uno[0] = pos[0]
     if (movimientoValido(uno)):
         if (tablero[uno[0]][uno[1]] == "v"):
             movimientos.append(uno)
@@ -432,4 +455,6 @@ def RedValue(tablero_aux,profundidad):
 
 
 if __name__ == "__main__":
-    BlueValue(tablero,1)
+    #BlueValue(tablero,1)
+    print (tablero[3][4])
+    print(movAlfil([3,4],tablero))
