@@ -1,4 +1,4 @@
-tablero = [
+tablero_inicial = [
     ["1tn","1cn","1an","rnn","rn","2an","2cn","2tn"],
     ["1pn","2pn","3pn","4pn","5pn","6pn","7pn","8pn"],
     ["v","v","v","v","v","v","v","v"],
@@ -19,7 +19,7 @@ def movimientoValido(posf):
 def moverFicha(posi,posf,tablero):
     print ("moverFicha")
     print (posi,posf)
-    ficha = tablero_aux[posi[0]][posi[1]]
+    ficha = tablero[posi[0]][posi[1]]
     tablero[posi[0]][posi[1]] = "v"
     tablero[posf[0]][posf[1]] = ficha
 
@@ -219,7 +219,7 @@ def movAlfil(pos,tablero):
 
     return movimientos
 
-def movReina(pos):
+def movReina(pos,tablero):
     movimientos1 = movAlfil(pos)
     movimientos2 = movTorre(pos)
     return movimientos1+movimientos2
@@ -401,20 +401,20 @@ def movFicha(ficha,pos,tablero):
 
     return movimientos,pos
 
-def BuscarFicha(ficha,tablero_aux):
-    for i in range (0,len(tablero_aux)):
-        for j in range (0,len(tablero_aux)):
-            if (tablero_aux[i][j]):
+def BuscarFicha(ficha,tablero):
+    for i in range (0,len(tablero)):
+        for j in range (0,len(tablero)):
+            if (tablero[i][j]):
                 return [i,j]
 
 #-----------Minimax------------
 
-def juegoTerminado(tablero_aux):
+def juegoTerminado(tablero):
     pass
 
-def BlueValue(tablero_aux,profundidad):
-    if(juegoTerminado(tablero_aux) or profundidad > profundidad_maxima):
-        return analisis(tablero_aux)
+def BlueValue(tablero,profundidad):
+    if(juegoTerminado(tablero) or profundidad > profundidad_maxima):
+        return analisis(tablero)
 
     maximo = -float('inf')
     mov_final = [-1,-1]
@@ -423,16 +423,16 @@ def BlueValue(tablero_aux,profundidad):
     mov_legales = {}
 
     # crea diccionario con todos los elementos que puede hacer cada ficha
-    for i in range(0,len(tablero_aux)):
-        for j in range(0,len(tablero_aux)):
-            if (tablero_aux[i][j] != "v"):
-                ficha = tablero_aux[i][j]
+    for i in range(0,len(tablero)):
+        for j in range(0,len(tablero)):
+            if (tablero[i][j] != "v"):
+                ficha = tablero[i][j]
                 mov_legales[ficha] = movFicha(ficha,[i,j])
 
     for ficha in mov_legales:
         for mov in mov_legales[ficha]:
             if (mov != []):
-                copia = tablero_aux[:]
+                copia = tablero[:]
                 posi = BuscarFicha(ficha,copia)
                 print ("posi : ",posi)
                 print ("mov: ", mov)
@@ -445,9 +445,9 @@ def BlueValue(tablero_aux,profundidad):
 
     return maximo
 
-def RedValue(tablero_aux,profundidad):
-    if(juegoTerminado(tablero_aux) or profundidad > profundidad_maxima):
-        return analisis(tablero_aux)
+def RedValue(tablero,profundidad):
+    if(juegoTerminado(tablero) or profundidad > profundidad_maxima):
+        return analisis(tablero)
 
     minimo = float('inf')
     mov_final = [-1,-1]
@@ -456,17 +456,17 @@ def RedValue(tablero_aux,profundidad):
     mov_legales = {}
 
     # crea diccionario con todos los elementos que puede hacer cada ficha
-    for i in range(0,len(tablero_aux)):
-        for j in range(0,len(tablero_aux)):
-            if (tablero_aux[i][j] != "v"):
-                ficha = tablero_aux[i][j]
+    for i in range(0,len(tablero)):
+        for j in range(0,len(tablero)):
+            if (tablero[i][j] != "v"):
+                ficha = tablero[i][j]
                 mov_legales[ficha] = movFicha(ficha,[i,j])
                 print ("movimientos en ficha : ", ficha)
                 print (mov_legales[ficha])
 
     for ficha in mov_legales:
             for mov in mov_legales[ficha]:
-                copia = tablero_aux[:]
+                copia = tablero[:]
                 posi = BuscarFicha(ficha,copia)
                 moverFicha(posi,mov,copia)
                 x = BlueValue(copia,profundidad+1)
@@ -480,5 +480,5 @@ def RedValue(tablero_aux,profundidad):
 
 if __name__ == "__main__":
     #BlueValue(tablero,1)
-    print (tablero[6][0])
-    print(movPeon([6,0],"blanco",tablero))
+    print (tablero_inicial[6][0])
+    print(movPeon([6,0],"blanco",tablero_inicial))
