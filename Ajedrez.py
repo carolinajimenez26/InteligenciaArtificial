@@ -11,17 +11,36 @@ tablero_inicial = [
 
 jerarquia = ["peon", "caballo", "alfil", "torre", "reina", "rey"]
 
-profundidad_maxima = 10
+"""
+Si al cabo de 50 jugadas consecutivas no se decide la partida, y no se produce una
+captura o se avanza un peon, la partida termina en tablas si uno de los jugadores lo
+solicita antes de que haya jaque mate.
+"""
+profundidad_maxima = 50
+
+maquina = "n"
 
 def movimientoValido(posf):
     return posf[0] >= 0 and posf[0] < 8 and posf[1] >= 0 and posf[1] < 8
 
 def moverFicha(posi,posf,tablero):
-    print ("moverFicha")
-    print (posi,posf)
+    #print ("moverFicha")
+    #print (posi,posf)
     ficha = tablero[posi[0]][posi[1]]
     tablero[posi[0]][posi[1]] = "v"
     tablero[posf[0]][posf[1]] = ficha
+    muestraTablero(tablero_inicial)
+
+def muestraTablero(tablero):
+    print ("-------------------------")
+    for i in range(0,len(tablero)):
+        for j in range(0,len(tablero)):
+            if (len(tablero[i][j]) != 3):
+                print (" %r   " % tablero[i][j]),
+            else:
+                print (" %r " % tablero[i][j]),
+        print ("\n")
+    print ("-------------------------")
 
 def movTorre(pos,tablero):
     tmp = pos[:]
@@ -406,15 +425,33 @@ def BuscarFicha(ficha,tablero):
         for j in range (0,len(tablero)):
             if (tablero[i][j]):
                 return [i,j]
+    return []
 
 #-----------Minimax------------
 
-def juegoTerminado(tablero):
-    pass
+def juegoTerminado(tablero): # cuando el rey quede en mate
+    reyes = []
+    for i in range(0,len(tablero)):
+        for j in range(0,len(tablero)):
+            if (tablero[i][j] == "rn" or tablero[i][j] == "rb"):
+                reyes.append(tablero[i][j])
+            if (len(reyes) == 2):
+                return reyes
+    return reyes
+
+# http://neverstopbuilding.com/minimax
+def analisis(tablero, profundidad, op, reyes):
+    if len(reyes == 2): 0
+    if (reyes[0][-1] == maquina): return 1 - profundidad
+    else : return profundidad - 1
+
 
 def BlueValue(tablero,profundidad):
-    if(juegoTerminado(tablero) or profundidad > profundidad_maxima):
-        return analisis(tablero)
+    print ("BlueValue")
+    print ("profundidad : ", profundidad)
+    jt = juegoTerminado(tablero)
+    if(len(jt) <= 1 or profundidad > profundidad_maxima):
+        return analisis(tablero,profundidad,"max",jt)
 
     maximo = -float('inf')
     mov_final = [-1,-1]
@@ -427,7 +464,7 @@ def BlueValue(tablero,profundidad):
         for j in range(0,len(tablero)):
             if (tablero[i][j] != "v"):
                 ficha = tablero[i][j]
-                mov_legales[ficha] = movFicha(ficha,[i,j])
+                mov_legales[ficha] = movFicha(ficha,[i,j],tablero)
 
     for ficha in mov_legales:
         for mov in mov_legales[ficha]:
@@ -446,8 +483,11 @@ def BlueValue(tablero,profundidad):
     return maximo
 
 def RedValue(tablero,profundidad):
-    if(juegoTerminado(tablero) or profundidad > profundidad_maxima):
-        return analisis(tablero)
+    print ("RedValue")
+    print ("profundidad : ", profundidad)
+    jt = juegoTerminado(tablero)
+    if(len(jt) <= 1 or profundidad > profundidad_maxima):
+        return analisis(tablero,profundidad,"min",jt)
 
     minimo = float('inf')
     mov_final = [-1,-1]
@@ -460,7 +500,7 @@ def RedValue(tablero,profundidad):
         for j in range(0,len(tablero)):
             if (tablero[i][j] != "v"):
                 ficha = tablero[i][j]
-                mov_legales[ficha] = movFicha(ficha,[i,j])
+                mov_legales[ficha] = movFicha(ficha,[i,j],tablero)
                 print ("movimientos en ficha : ", ficha)
                 print (mov_legales[ficha])
 
@@ -479,6 +519,7 @@ def RedValue(tablero,profundidad):
 
 
 if __name__ == "__main__":
-    #BlueValue(tablero,1)
-    print (tablero_inicial[6][0])
-    print(movPeon([6,0],"blanco",tablero_inicial))
+    muestraTablero(tablero_inicial)
+    #print (movFicha("1tn" , [0,0] , tablero_inicial))
+    #moverFicha([0,1],[0,0],tablero_inicial)
+    #BlueValue(tablero_inicial,1)
