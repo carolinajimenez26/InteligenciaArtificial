@@ -163,7 +163,6 @@ def movAlfil(pos,tablero):
     tmp = pos[:]
     tmp[1] = pos[1]+1
     tmp[0] = pos[0]-1
-    print ("tmp : ", tmp)
 
     # arriba derecha
     while (True):
@@ -221,159 +220,184 @@ def movAlfil(pos,tablero):
     return movimientos
 
 def movReina(pos):
-    print ("movReina")
     movimientos1 = movAlfil(pos)
     movimientos2 = movTorre(pos)
     return movimientos1+movimientos2
 
-def movRey(pos):
+def movRey(pos,tablero):
     print ("movRey")
     movimientos = []
+
     # arriba
     uno = pos[:]
-    uno[1] = pos[1]
     uno[0] = pos[0]-1
+
     if (movimientoValido(uno)):
         if (tablero[uno[0]][uno[1]] == "v"):
-            movimientos.append(uno)
-        if (tablero[uno[0]][uno[1]][-1] != tablero[pos[0]][pos[1]][-1]):
-            movimientos.append(uno)
+            movimientos.append(uno[:])
+        if (tablero[uno[0]][uno[1]][-1] != tablero[pos[0]][pos[1]][-1] and tablero[uno[0]][uno[1]] != "v"):
+            movimientos.append(uno[:])
+
     # abajo
+    uno = pos[:]
     uno[0] = pos[0]+1
     if (movimientoValido(uno)):
         if (tablero[uno[0]][uno[1]] == "v"):
-            movimientos.append(uno)
-        if (tablero[uno[0]][uno[1]][-1] != tablero[pos[0]][pos[1]][-1]):
-            movimientos.append(uno)
+            movimientos.append(uno[:])
+        if (tablero[uno[0]][uno[1]][-1] != tablero[pos[0]][pos[1]][-1] and tablero[uno[0]][uno[1]] != "v"):
+            movimientos.append(uno[:])
+
     # izquierda
+    uno = pos[:]
     uno[1] = pos[1]-1
-    uno[0] = pos[0]
     if (movimientoValido(uno)):
         if (tablero[uno[0]][uno[1]] == "v"):
-            movimientos.append(uno)
-        if (tablero[uno[0]][uno[1]][-1] != tablero[pos[0]][pos[1]][-1]):
-            movimientos.append(uno)
+            movimientos.append(uno[:])
+        if (tablero[uno[0]][uno[1]][-1] != tablero[pos[0]][pos[1]][-1] and tablero[uno[0]][uno[1]] != "v"):
+            movimientos.append(uno[:])
+
     # derecha
+    uno = pos[:]
     uno[1] = pos[1]+1
-    uno[0] = pos[0]
     if (movimientoValido(uno)):
         if (tablero[uno[0]][uno[1]] == "v"):
-            movimientos.append(uno)
-        if (tablero[uno[0]][uno[1]][-1] != tablero[pos[0]][pos[1]][-1]):
-            movimientos.append(uno)
+            movimientos.append(uno[:])
+        if (tablero[uno[0]][uno[1]][-1] != tablero[pos[0]][pos[1]][-1] and tablero[uno[0]][uno[1]] != "v"):
+            movimientos.append(uno[:])
 
     return movimientos
 
-def movPeon(pos,color):
+def movPeon(pos,color,tablero):
     print ("movPeon")
     movimientos = []
     if (color == "negro"): #hacia abajo
 
-        if (pos[1] == 1): #primera posicion
-            uno = pos
-            uno[1] = pos[1]+1
-            dos = pos
-            dos[1] = pos[1]+2
+        if (pos[0] == 1): #primera posicion
+            uno = pos[:]
+            uno[0] = pos[0]+1
+            dos = pos[:]
+            dos[0] = pos[0]+2
 
             #diagonales
-            tres[1] = pos[1]+1
+            tres = pos[:]
             tres[0] = pos[0]+1
-            cuatro[1] = pos[1]+1
-            cuatro[0] = pos[0]-1
+            tres[1] = pos[1]+1
+            cuatro = pos[:]
+            cuatro[0] = pos[0]+1
+            cuatro[1] = pos[1]-1
 
             posibilidades = [uno,dos,tres,cuatro]
 
             for p in posibilidades:
 
                 if (movimientoValido(p)):
-                    if (tablero[p[0]][p[1]] == "v"):
+                    if (tablero[p[0]][p[1]][-1] != tablero[pos[0]][pos[1]][-1] and p != uno and p!= dos and tablero[p[0]][p[1]] != "v"):
                         movimientos.append(p)
-                    if (tablero[p[0]][p[1]][-1] != tablero[pos[0]][pos[1]][-1] and p != uno and p!= dos):
+                        break
+                    if (tablero[p[0]][p[1]] == "v" and p!= tres and p!= cuatro):
                         movimientos.append(p)
+                    if (tablero[p[0]][p[1]] != "v" and p!= tres and p!= cuatro):
+                        break
+
 
         else :
-            uno = pos
-            uno[1] = pos[1]+1
+            uno = pos[:]
+            uno[0] = pos[0]+1
 
             #diagonales
-            tres[1] = pos[1]+1
+            tres = pos[:]
             tres[0] = pos[0]+1
-            cuatro[1] = pos[1]+1
-            cuatro[0] = pos[0]-1
+            tres[1] = pos[1]+1
+            cuatro = pos[:]
+            cuatro[0] = pos[0]+1
+            cuatro[1] = pos[1]-1
 
             posibilidades = [uno,tres,cuatro]
 
             for p in posibilidades:
 
                 if (movimientoValido(p)):
-                    if (tablero[p[0]][p[1]] == "v"):
+                    if (tablero[p[0]][p[1]] == "v" and p!= tres and p!= cuatro):
                         movimientos.append(p)
-                    if (tablero[p[0]][p[1]][-1] != tablero[pos[0]][pos[1]][-1] and p != uno):
+                    if (tablero[p[0]][p[1]][-1] != tablero[pos[0]][pos[1]][-1] and p != uno and tablero[p[0]][p[1]] != "v"):
                         movimientos.append(p)
+                        break
+                    if (tablero[p[0]][p[1]] != "v" and p!= tres and p!= cuatro):
+                        break
 
 
     if (color == "blanco"): #hacia arriba
 
-        if (pos[1] == 6): #primera posicion
-            uno = pos
-            uno[1] = pos[1]-1
-            dos = pos
-            dos[1] = pos[1]-2
+        if (pos[0] == 6): #primera posicion
+            uno = pos[:]
+            uno[0] = pos[0]-1
+            dos = pos[:]
+            dos[0] = pos[0]-2
 
             #diagonales
-            tres[1] = pos[1]-1
-            tres[0] = pos[0]+1
-            cuatro[1] = pos[1]-1
+            tres = pos[:]
+            tres[0] = pos[0]-1
+            tres[1] = pos[1]+1
+            cuatro = pos[:]
             cuatro[0] = pos[0]-1
+            cuatro[1] = pos[1]-1
 
             posibilidades = [uno,dos,tres,cuatro]
 
             for p in posibilidades:
 
                 if (movimientoValido(p)):
-                    if (tablero[p[0]][p[1]] == "v"):
+                    if (tablero[p[0]][p[1]] == "v" and p!= tres and p!= cuatro):
                         movimientos.append(p)
-                    if (tablero[p[0]][p[1]][-1] != tablero[pos[0]][pos[1]][-1] and p != uno and p!= dos):
+                    if (tablero[p[0]][p[1]][-1] != tablero[pos[0]][pos[1]][-1] and p != uno and p!= dos and tablero[p[0]][p[1]] != "v"):
                         movimientos.append(p)
+                        break
+                    if (tablero[p[0]][p[1]] != "v" and p!= tres and p!= cuatro):
+                        break
 
         else :
-            uno = pos
-            uno[1] = pos[1]-1
+            uno = pos[:]
+            uno[0] = pos[0]-1
 
             #diagonales
-            tres[1] = pos[1]-1
-            tres[0] = pos[0]+1
-            cuatro[1] = pos[1]-1
+            tres = pos[:]
+            tres[0] = pos[0]-1
+            tres[1] = pos[1]+1
+            cuatro = pos[:]
             cuatro[0] = pos[0]-1
+            cuatro[1] = pos[1]-1
 
             posibilidades = [uno,tres,cuatro]
 
             for p in posibilidades:
 
                 if (movimientoValido(p)):
-                    if (tablero[p[0]][p[1]] == "v"):
+                    if (tablero[p[0]][p[1]] == "v" and p!= tres and p!= cuatro):
                         movimientos.append(p)
-                    if (tablero[p[0]][p[1]][-1] != tablero[pos[0]][pos[1]][-1] and p != uno):
+                    if (tablero[p[0]][p[1]][-1] != tablero[pos[0]][pos[1]][-1] and p != uno and tablero[p[0]][p[1]] != "v"):
                         movimientos.append(p)
+                        break
+                    if (tablero[p[0]][p[1]] != "v" and p!= tres and p!= cuatro):
+                        break
 
     return movimientos
 
-def movFicha(ficha,pos):
+def movFicha(ficha,pos,tablero):
     movimientos = []
     if (ficha[1] == "t"):
-        movimientos = movTorre(pos)
+        movimientos = movTorre(pos,tablero)
     if (ficha[1] == "c"):
-        movimientos = movCaballo(pos)
+        movimientos = movCaballo(pos,tablero)
     if (ficha[1] == "a"):
-        movimientos = movAlfil(pos)
+        movimientos = movAlfil(pos,tablero)
     if (ficha[1:] == "rnn" or ficha[1:] == "rnb"):
-        movimientos = movReina(pos)
+        movimientos = movReina(pos,tablero)
     if (ficha[1:] == "rn" or ficha[1:] == "rb"):
-        movimientos = movRey(pos)
+        movimientos = movRey(pos,tablero)
     if (ficha[1:] == "pn"):
-        movimientos = movPeon("negro",pos)
+        movimientos = movPeon("negro",pos,tablero)
     if (ficha[1:] == "pb"):
-        movimientos = movPeon("blanco",pos)
+        movimientos = movPeon("blanco",pos,tablero)
 
     return movimientos,pos
 
@@ -456,5 +480,5 @@ def RedValue(tablero_aux,profundidad):
 
 if __name__ == "__main__":
     #BlueValue(tablero,1)
-    print (tablero[3][4])
-    print(movAlfil([3,4],tablero))
+    print (tablero[6][0])
+    print(movPeon([6,0],"blanco",tablero))
