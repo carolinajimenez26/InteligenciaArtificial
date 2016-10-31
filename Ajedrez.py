@@ -1,3 +1,5 @@
+from copy import copy, deepcopy
+
 tablero_inicial = [
     ["1tn","1cn","1an","rnn","rn","2an","2cn","2tn"],
     ["1pn","2pn","3pn","4pn","5pn","6pn","7pn","8pn"],
@@ -11,14 +13,12 @@ tablero_inicial = [
 
 jerarquia = ["peon", "caballo", "alfil", "torre", "reina", "rey"]
 
-"""
-Si al cabo de 50 jugadas consecutivas no se decide la partida, y no se produce una
-captura o se avanza un peon, la partida termina en tablas si uno de los jugadores lo
-solicita antes de que haya jaque mate.
-"""
-profundidad_maxima = 1
+
+profundidad_maxima = 4
 
 maquina = "n"
+mov_final = [-1,-1]
+ficha_final = "v"
 
 def movimientoValido(posf):
     return posf[0] >= 0 and posf[0] < 8 and posf[1] >= 0 and posf[1] < 8
@@ -29,7 +29,6 @@ def moverFicha(posi,posf,tablero):
     ficha = tablero[posi[0]][posi[1]]
     tablero[posi[0]][posi[1]] = "v"
     tablero[posf[0]][posf[1]] = ficha
-    muestraTablero(tablero_inicial)
 
 def muestraTablero(tablero):
     print ("-------------------------")
@@ -446,7 +445,6 @@ def analisis(tablero, profundidad, op, reyes):
 def BlueValue(tablero,profundidad):
     print ("BlueValue")
     print ("profundidad : ", profundidad)
-    muestraTablero(tablero)
     jt = juegoTerminado(tablero)
     if(len(jt) <= 1 or profundidad > profundidad_maxima):
         return analisis(tablero,profundidad,"max",jt)
@@ -460,16 +458,19 @@ def BlueValue(tablero,profundidad):
     # crea diccionario con todos los elementos que puede hacer cada ficha
     for i in range(0,len(tablero)):
         for j in range(0,len(tablero)):
-            if (tablero[i][j] != "v"):
+            if (tablero[i][j] != "v" and tablero[i][j][-1] == "n"):
                 ficha = tablero[i][j]
                 mov_legales[ficha] = movFicha(ficha,[i,j],tablero)
 
     for ficha in mov_legales:
+        print ("I'm blue", ficha)
         for mov in mov_legales[ficha]:
             if (mov != []):
-                copia = tablero[:]
+                #copia = tablero[:]
+                copia = deepcopy(tablero)
                 posi = BuscarFicha(ficha,copia)
                 moverFicha(posi,mov,copia)
+                muestraTablero(copia)
                 x = RedValue(copia,profundidad+1)
                 print ("blue_x : ", x)
                 if (x > maximo):
@@ -477,47 +478,51 @@ def BlueValue(tablero,profundidad):
                     mov_final = mov
                     ficha_final = ficha
 
-    return maximo,mov_final,ficha_final
+    return [maximo,mov_final,ficha_final]
 
 def RedValue(tablero,profundidad):
     print ("RedValue")
     print ("profundidad : ", profundidad)
-    muestraTablero(tablero)
     jt = juegoTerminado(tablero)
     if(len(jt) <= 1 or profundidad > profundidad_maxima):
         return analisis(tablero,profundidad,"min",jt)
 
     minimo = float('inf')
-    mov_final = [-1,-1]
-    ficha_final = "v"
 
     mov_legales = {}
 
     # crea diccionario con todos los elementos que puede hacer cada ficha
     for i in range(0,len(tablero)):
         for j in range(0,len(tablero)):
-            if (tablero[i][j] != "v"):
+            if (tablero[i][j] != "v" and tablero[i][j][-1] == "b"):
                 ficha = tablero[i][j]
                 mov_legales[ficha] = movFicha(ficha,[i,j],tablero)
 
     for ficha in mov_legales:
-            for mov in mov_legales[ficha]:
-                copia = tablero[:]
+        print ("I'm red", ficha)
+        for mov in mov_legales[ficha]:
+            if (mov != []):
+                copia = deepcopy(tablero)
                 posi = BuscarFicha(ficha,copia)
                 moverFicha(posi,mov,copia)
+                muestraTablero(copia)
                 x = BlueValue(copia,profundidad+1)
                 print ("red_x : ", x)
-                if (x < minimo):
-                    minimo = x
-                    mov_final = mov
-                    ficha_final = ficha
+                if (type(x) == int):
+                    if (x < minimo):
+                        minimo = x
+                else:
+                    if (x[0] < minimo):
+                        minimo = x[0]
 
-    return minimo,mov_final,ficha_final
+    return minimo#,mov_final,ficha_final
 
 
 if __name__ == "__main__":
-    muestraTablero(tablero_inicial)
+    #muestraTablero(tablero_inicial)
     #print (movFicha("1pn" , [1,0] , tablero_inicial))
     #moverFicha([0,1],[0,0],tablero_inicial)
     res = BlueValue(tablero_inicial,1)
-    print ("resultado : ",res)
+    print ("resultado : ")
+    print ("Debe mover la ficha ", res[2], end = "")
+    print (" a la posicion ", res[1])
