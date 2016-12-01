@@ -2,35 +2,35 @@ import cv2
 import sys
 import csv
 import numpy as np
-from PIL import Image
+#from PIL import Image
 
 face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml') #clasificadores Haar para detectar caras
 
-def train(x,labels):
+def train(x,l):
 	images = []
 	minSize = np.inf
-	index = 0
+	#index = 0
 	for image_path in x: #imagenes
-
-		index += 1
-		image_pil = Image.open(image_path).convert('L')
-		img = np.array(image_pil, 'uint8')
+		#index += 1
+		img = cv2.imread(image_path)
+		#image_pil = Image.open(image_path).convert('L')
+		#img = np.array(image_pil, 'uint8')
 		faces = FindFaces(img)
 
-		if (len(faces) == 0): # no faces
-			#images.append(np.array([-1]))
-			labels.pop(index-1)
-		else:
-			for (x, y, w, h) in faces:
-				face = img[y: y + h, x: x + w]
-				if (face.size < minSize):
-					minSize = face.size
-					min_img = face
-				images.append(face)#solo nos interesa la cara
+		if (len(faces) == 0): # si no ha detectado caras
+			images.append(img)
+		for (x, y, w, h) in faces:
+			face = img[y: y + h, x: x + w]
+			if (face.size < minSize):
+				minSize = face.size
+				min_img = face
+			images.append(face)#solo nos interesa la cara
 
 	height, width = min_img.shape[:2]
+	print ("min_size:", minSize)
+
 	#deben tener el mismo tamaño para entrenar el algoritmo
-	"""for i in range(0,len(images)):
+	for i in range(0,len(images)):
 		if (images[i].any() == -1):
 			print ("remove")
 			images.remove(i)
@@ -38,12 +38,19 @@ def train(x,labels):
 		else:
 			if (images[i].shape[:2] != min_img.shape[:2]):
 				images[i] = cv2.resize(images[i], (width, height), interpolation = cv2.INTER_CUBIC)
-	"""
-	print ("images : ", len(images))
-	print ("labels : ", len(labels))
 
-	#recognizer = cv2.face.createEigenFaceRecognizer()
-	#recognizer.train(images,np.array(labels))
+	#print ("images : ", len(images))
+	#print ("labels : ", len(l))
+
+	"""for image in images:
+		#cv2.imshow("Detectados", image)
+		#cv2.waitKey(0)
+		print ("guat?:", image.size)"""
+
+
+	recognizer = cv2.face.createEigenFaceRecognizer()
+	recognizer.train(images,np.array(l))
+	return recognizer, min_img
 
 def getInfo(file_name):
 	images = []
@@ -92,7 +99,24 @@ def main():
 	# retorna la informacion del archivo csv en dos arreglos
 	x,y = getInfo(file_name)
 
-	train(x,y)
+	recognizer,min_img = train(x,y) #entrena al algoritmo para que reconozca los rostros
+	height, width = min_img.shape[:2]
+
+	#busca en la imagen ingresada si hay un rostro conocido
+	faces = FindFaces(img_gray) #busca solo las caras
+	print ("faces:", len(faces))
+	for (x, y, w, h) in faces:
+		face = img_gray[y: y + h, x: x + w]
+		print ("face: ", face.size)
+		if (face.shape[:2] != min_img.shape[:2]):
+			face = cv2.resize(face, (width, height), interpolation = cv2.INTER_CUBIC)
+
+		cv2.imshow("uhmm", face)
+		cv2.waitKey(0)
+
+		id, conf = recognizer.predict(face)
+		print ("id: ", id)
+		print ("conf: ", conf)
 
 if __name__ == "__main__":
     main()
