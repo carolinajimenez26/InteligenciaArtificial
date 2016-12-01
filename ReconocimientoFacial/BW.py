@@ -5,7 +5,6 @@
 import sys
 import os.path
 import cv2
-from PIL import Image
 
 if __name__ == "__main__":
 
