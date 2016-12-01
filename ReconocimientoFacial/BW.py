@@ -4,6 +4,7 @@
 
 import sys
 import os.path
+import cv2
 from PIL import Image
 
 if __name__ == "__main__":
@@ -20,11 +21,10 @@ if __name__ == "__main__":
         for subdirname in dirnames:
             subject_path = os.path.join(dirname, subdirname)
             for filename in os.listdir(subject_path):
-                print filename
                 #Se necesita la ruta completa para abrir la imagen
                 dire = os.path.join(subject_path , filename)
-                img = Image.open(dire).convert('L')
-                img.show()
-                img.save(dire)
 
+                img = cv2.imread(dire)
+                gris = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+                cv2.imwrite(dire, gris)
             label = label + 1
