@@ -21,9 +21,9 @@ if __name__ == "__main__":
             subject_path = os.path.join(dirname, subdirname)
             for filename in os.listdir(subject_path):
                 #Se necesita la ruta completa para abrir la imagen
-                dire = os.path.join(subject_path , filename)
+                image_path = os.path.join(subject_path , filename)
 
-                img = cv2.imread(dire)
-                gris = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-                cv2.imwrite(dire, gris)
+                img = cv2.imread(image_path)
+                img_gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+                cv2.imwrite(image_path, img_gray)
             label = label + 1
