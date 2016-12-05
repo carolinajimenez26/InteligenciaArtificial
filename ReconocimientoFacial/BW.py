@@ -8,10 +8,6 @@ import cv2
 
 if __name__ == "__main__":
 
-    if len(sys.argv) != 2:
-        print "usage: create_csv <base_path>"
-        sys.exit(1)
-
     BASE_PATH=sys.argv[1]
     SEPARATOR=";"
 
