@@ -13,6 +13,7 @@ def train(x,l):
 	images = []
 	labels = []
 	minSize = np.inf
+	min_img = np.array([])
 	index = 0
 	for image_path in x: #imagenes
 		index += 1
@@ -67,7 +68,7 @@ def FindFaces(image):
 	faces = face_cascade.detectMultiScale(
 		image,
 		scaleFactor = 1.1,
-		minNeighbors = 10,
+		minNeighbors = 20,
 		minSize= (100,100),
 		flags = cv2.CASCADE_SCALE_IMAGE
 	) #saca las coordenadas de los rostros encontrados
