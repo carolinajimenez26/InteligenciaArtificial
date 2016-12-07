@@ -5,10 +5,6 @@ import numpy as np
 
 face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml') #clasificadores Haar para detectar caras
 
-def normalizeImage(image):
-	if (image.shape[:2] > (512,512)):
-		return cv2.resize(image, (512, 512))#,interpolation = cv2.INTER_CUBIC)
-
 def train(x,l):
 	images = []
 	labels = []
@@ -18,7 +14,6 @@ def train(x,l):
 	for image_path in x: #imagenes
 		index += 1
 		img = cv2.imread(image_path)
-		#img = normalizeImage(img)
 		faces = FindFaces(img)
 
 		if (len(faces) != 0): # si ha detectado caras
@@ -31,6 +26,9 @@ def train(x,l):
 					min_img = face
 				images.append(np.array(face).flatten())#solo nos interesa la cara
 				labels.append(l[index-1])
+				cv2.imshow("Entrenados", face)
+				cv2.waitKey(50)
+	cv2.destroyAllWindows()
 
 	height, width = min_img.shape[:2]
 
@@ -39,11 +37,6 @@ def train(x,l):
 		if (images[i].shape[:2] != min_img.shape[:2]):
 			images[i] = cv2.resize(images[i], (width, height), interpolation = cv2.INTER_CUBIC)
 
-	for image in images:
-		cv2.imshow("Entrenados", image)
-		cv2.waitKey(50)
-		#print ("guat?:", image.size)
-	cv2.destroyAllWindows()
 	recognizer = cv2.face.createEigenFaceRecognizer()
 	recognizer.train(np.array(images),np.array(labels))
 	#recognizer.save("recognizer.xml")
@@ -67,9 +60,9 @@ def FindFaces(image):
 
 	faces = face_cascade.detectMultiScale(
 		image,
-		scaleFactor = 1.1,
-		minNeighbors = 20,
-		minSize= (100,100),
+		scaleFactor = 1.2,
+		minNeighbors = 5,
+		minSize= (30,30),
 		flags = cv2.CASCADE_SCALE_IMAGE
 	) #saca las coordenadas de los rostros encontrados
 
@@ -91,8 +84,8 @@ def main():
 	image_dir = sys.argv[1]
 	file_name = sys.argv[2]
 	image = cv2.imread(image_dir)
-	#image = normalizeImage(image)
 	img_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) # se convierte a escala de grises
+	#img_gray = cv2.equalizeHist(img_gray)
 
 	# retorna la informacion del archivo csv en dos arreglos
 	x,y = getInfo(file_name)
@@ -109,14 +102,11 @@ def main():
 			if (face.shape[:2] != min_img.shape[:2]):
 				face = cv2.resize(face, (width, height), interpolation = cv2.INTER_CUBIC)
 
-			cv2.imshow("uhmm", face)
-			cv2.waitKey(0)
-
 			id, conf = recognizer.predict(face)
 			print ("id: ", id)
 			print ("conf: ", conf)
 
-			if (conf < 10 and id != -1):#si encuentra a alguien con un parecido mayor a 50%
+			if (id != -1): #and conf < 10):#si encuentra a alguien con un parecido mayor a 50%
 				#pinta el cuadrado en su cara
 				cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0),2)
 
